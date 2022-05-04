@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="dashboard.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Takalot Yetzoor</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1  class="h1">תקלות ייצור</h1>
+    
+        <div class="container flex">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+        class="btn btn-dark mb-2 justify-end">הוספת תקלה</button>
+        </div>
+        
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <table id="bugs-table" class="table table-bordered table-dark ">
+                    <thead>
+                        <tr>
+                            <th scope="col">מזהה תקלה</th>
+                            <th scope="col">ערוץ</th>
+                            <th scope="col">שירות</th>
+                            <th scope="col">תיאור</th>
+                            <th scope="col">מספר תקלה בסנואו</th>
+                            <th scope="col">סטטוס טיפול</th>
+                            <th scope="col">מספר תקלה במערכת</th>
+                            <th scope="col">גרסה לטיפול</th> 
+                        </tr>
+                    </thead>
+                    <tbody id="main_table">
+                      
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+    
+    </div>
+
+
+    <!-- Modal -->
+    <div  class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                    <h5 class="modal-title" id="addBugiframeTitle">הוספת תקלה</h5>
+                <div class="modal-body">
+                    <form action="http://localhost:3000/add-bug" method="POST" id="add-bug">
+                        <div class="form-row">
+                          <div class="form-group">
+                            <label for="BugId">מזהה תקלה</label>
+                            <input type="text" class="form-control" id="Bugid" name="BugId">
+                          </div>
+                          <div class="form-group">
+                            <label class="text-align-center" for="Channel">ערוץ תקלה</label>
+                                <select id="Channel" class="form-control" name="Channel">
+                                    <option selected class="text-align-center">בחר</option>
+                                    <option class="text-align-center">אתר</option>
+                                    <option class="text-align-center">אפליקציה</option>
+                                </select>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="Service">שירות</label>
+                          <input type="text" class="form-control" id="Service" name="Service">
+                        </div>
+                        <div class="form-group">
+                          <label for="Description">תיאור</label>
+                          <input type="text" class="form-control" id="description" name="Description">
+                        </div>
+                        <div class="form-row">
+                          <div class="form-group">
+                            <label for="NumberInSnow">מספר תקלה בסנואו</label>
+                            <input type="text" class="form-control" id="numberInSnow">
+                          </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                              <label for="Status"> סטטוס</label>
+                                <select id="Channel" class="form-control">
+                                    <option selected class="text-align-center">בחר</option>
+                                    <option class="text-align-center">טרם תוחקר</option>
+                                    <option class="text-align-center">בתחקור</option>
+                                    <option class="text-align-center">בפיתוח</option>
+                                    <option class="text-align-center">תיקון מחכה לעלייה לייצור</option>
+                                    <option class="text-align-center">תיקון עלה לייצור</option>
+                                </select>
+                            </div>
+                          </div>
+                          <div class="form-row">
+                            <div class="form-group">
+                              <label for="NumberInSystem">מספר תקלה במערכת</label>
+                              <input type="text" class="form-control" id="numberInSystem">
+                            </div>
+                          </div>
+                          <div class="form-row">
+                            <div class="form-group">
+                              <label for="NumberInSnow"> גרסה לטיפול</label>
+                              <input type="text" class="form-control" id="numberInSnow">
+                            </div>
+                          </div>
+                        <button type="submit" id="endAddBug"class="btn btn-dark">הוסף תקלה</button>
+                      </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+  
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      $("#add-bug").submit(function(e) {
+
+      e.preventDefault(); // avoid to execute the actual submit of the form.
+
+      var form = $(this);
+      var actionUrl = form.attr('action');
+
+      function add_bug(data){
+        row = '<tr>'
+        for (const key in data) {
+          row += `<td> ${data[key]} </td>`; 
+        }
+        row += "</tr>";
+        return row;
+      }
+
+      $.ajax({
+          type: "POST",
+          url: actionUrl,
+          data: form.serialize(), // serializes the form's elements.
+          success: function(data)
+          {
+            $('#exampleModal').modal('hide');
+            console.log(data)
+
+            $('#main_table').append(add_bug(data.data));
+
+            //alert(data); // show response from the php script.
+          }
+      });
+
+});
+
+
+
+
+$(document).ready(function() {
+  $.ajax({
+          type: "GET",
+          url: "http://localhost:3000/bugs",
+          success: function(data)
+          {
+            $('#exampleModal').modal('hide');
+            console.log(data)
+
+            data.forEach(element => {
+              $('#main_table').append(add_bug(element));
+            });
+            
+
+            //alert(data); // show response from the php script.
+          }
+      });
+});
+    </script>
+        
+</body>
+
+</html>
