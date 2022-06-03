@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!--#region head  -->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link href="/frontend/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="dashboard.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Takalot Yetzoor</title>
+  <!--#endregion-->
+</head>
+
+<body>
+
+  <!--#region Main container of buttons and table of bugs-->
+  <div class="container">
+    <h1 class="h1 mb-4 font-weight-bold">תקלות ייצור</bug>
+    </h1>
+
+    <!-- #region Header buttons-->
+    <div class="container d-flex justify-content-center">
+      <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+        class="btn btn-dark mb-2 justify-end m-2 " id="addBugButtonMenue" data-bs-backdrop='static'
+        onclick="UpdateNumberId()">הוספת תקלה</button>
+      <input class="btn btn-dark mb-2 justify-end m-2" id="search-field" type="text" placeholder="חפש.."><br><br>
+      <button type="button" id="exportButton" class="btn btn-outline-dark mb-2 me-auto "><img src="/frontend/icons/icons8-microsoft-excel-32.png"></button>
+    </div>
+    <!-- #endregion -->
+
+    <!-- #region Main table og all bugs-->
+    <div class="container">
+      <div class="row justify-content-md-center">
+        <table id="bugs-table" class="table table-bordered table-dark  ">
+          <thead>
+            <tr>
+              <th scope="col">מספר תקלה</th>
+              <th scope="col">ערוץ</th>
+              <th scope="col">שירות</th>
+              <th scope="col" class="wrapper">תיאור</th>
+              <th scope="col">מספר-Snow</th>
+              <th scope="col">
+                <label for="Status"> סטטוס </label>
+                <select id="Status-select" name="StatusTH" class="btn btn-dark" style="width:40px;">
+                  <option class="text-align-center">הכל</option>
+                  <option class="text-align-center">טרם תוחקר</option>
+                  <option class="text-align-center">בתחקור</option>
+                  <option class="text-align-center">בפיתוח</option>
+                  <option class="text-align-center">תיקון מחכה לעלייה לייצור</option>
+                  <option class="text-align-center">תיקון עלה לייצור</option>
+                </select>
+                </select>
+              </th>
+              <th scope="col">מספר תקלה במערכת</th>
+              <th scope="col">גרסה לטיפול</th>
+              <th scope="col" class="noEx">פעולות נוספות</th>
+            </tr>
+          </thead>
+          <tbody id="main_table">
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- #endregion -->
+  </div>
+  <!-- #endregion -->
+
+  <!--#region  Modal of new bug -->
+  <div class="modal fade" id="exampleModal" data-bs-backdrop='static' tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addBugiframeTitle">הוספת/עריכת תקלה</h5>
+          <button type="button" id="closeModal" onclick="CloseModalHandle()" class="close" data-bs-dismiss="modal"
+            aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="http://localhost:3000/add-bug" method="POST" id="add-bug">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="BugId">מספר תקלה</label>
+                <input required type="text" class="form-control" id="Bugid" name="BugId">
+              </div>
+              <div class="form-group">
+                <label class="text-align-center" for="Channel">ערוץ תקלה</label>
+                <select id="Channel" class="form-control" name="Channel">
+                  <option selected class="text-align-center">בחר</option>
+                  <option class="text-align-center">אתר</option>
+                  <option class="text-align-center">אפליקציה</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="Service">שירות</label>
+              <input required type="text" class="form-control" id="Service" name="Service">
+            </div>
+            <div class="form-group overflow-auto">
+              <label for="Description">תיאור</label>
+              <textarea required class="form-control" id="description" rows="10" name="Description"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="NumberInSnow">מספר תקלה בסנואו</label>
+                <input required type="text" class="form-control" id="numberInSnow" name="NumberInSnow">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="Status">סטטוס</label>
+                <select id="Status" class="form-control" name="Status">
+                  <option class="text-align-center">בחר</option>
+                  <option class="text-align-center">טרם תוחקר</option>
+                  <option class="text-align-center">בתחקור</option>
+                  <option class="text-align-center">בפיתוח</option>
+                  <option class="text-align-center">תיקון מחכה לעלייה לייצור</option>
+                  <option class="text-align-center">תיקון עלה לייצור</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="NumberInSystem">מספר תקלה במערכת</label>
+                <input required type="text" class="form-control" id="numberInSystem" name="NumberInTheSystem">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="NumberInSnow"> גרסה לטיפול</label>
+                <input required type="text" class="form-control" id="versionForProd" name="VersionForProd">
+              </div>
+            </div>
+            <button type="submit" id="endAddBug" class="btn btn-dark">הוספה</button>
+            <button id="editBugId" class="btn btn-dark" onclick="update_bug_post()">שמירה</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--#endregion-->
+
+  <!--#region Edit bug-->
+  <div class="modal fade" id="edit-bug" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <label for="BugToDelete">מספר תקלה</label>
+          <input required type="text" class="form-control mb-1" id="Bugid" name="BugToDelete">
+          <button type="button" class="btn btn-dark justify-content-center">הצג</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- #endregion -->
+
+    <!--#region All Scripts ref-->
+    <script src="/frontend/js/bootstrap.bundle.min.js"></script>
+    <script src="/frontend/js/jquery.js"></script>
+    <script src="/frontend/index.js"></script>
+    <script src="/frontend/js/table2Ex.js"></script>
+    <!-- #endregion -->>
+</body>
+
+</html>

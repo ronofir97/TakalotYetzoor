@@ -1,0 +1,16 @@
+html{
+    direction: rtl;
+}
+body{
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 20px;
+    background-color: #EEEEEE;
+}
+
+td,tr{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    max-width: 100px;
+  }
